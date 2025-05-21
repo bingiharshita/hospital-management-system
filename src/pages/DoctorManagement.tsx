@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -86,17 +85,20 @@ const DoctorManagement: React.FC = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   
   // Form state for adding/editing doctors
-  const [formData, setFormData] = useState({
+  const [doctorForm, setDoctorForm] = useState({
     name: '',
     email: '',
-    specialty: '',
-    status: 'active' as const,
+    phone: '',
+    specialization: '',
+    experience: '',
+    status: 'active' as 'active' | 'on-leave' | 'inactive',
+    image: ''
   });
   
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setDoctorForm(prev => ({
       ...prev,
       [name]: value
     }));
@@ -127,7 +129,7 @@ const DoctorManagement: React.FC = () => {
       setDoctors(prev => 
         prev.map(doctor => 
           doctor.id === selectedDoctor.id 
-            ? { ...doctor, ...formData } 
+            ? { ...doctor, ...doctorForm } 
             : doctor
         )
       );
@@ -139,7 +141,7 @@ const DoctorManagement: React.FC = () => {
       // Add new doctor
       const newDoctor: Doctor = {
         id: `${doctors.length + 1}`,
-        ...formData,
+        ...doctorForm,
         joinDate: new Date().toISOString().split('T')[0]
       };
       setDoctors(prev => [...prev, newDoctor]);
@@ -156,11 +158,14 @@ const DoctorManagement: React.FC = () => {
   
   // Reset form and selected doctor
   const resetForm = () => {
-    setFormData({
+    setDoctorForm({
       name: '',
       email: '',
-      specialty: '',
+      phone: '',
+      specialization: '',
+      experience: '',
       status: 'active',
+      image: ''
     });
     setSelectedDoctor(null);
   };
@@ -168,11 +173,14 @@ const DoctorManagement: React.FC = () => {
   // Open edit dialog with doctor data
   const openEditDialog = (doctor: Doctor) => {
     setSelectedDoctor(doctor);
-    setFormData({
+    setDoctorForm({
       name: doctor.name,
       email: doctor.email,
-      specialty: doctor.specialty,
+      phone: doctor.phone,
+      specialization: doctor.specialty,
+      experience: doctor.experience,
       status: doctor.status,
+      image: doctor.avatar
     });
     setIsAddDialogOpen(true);
   };
@@ -226,7 +234,7 @@ const DoctorManagement: React.FC = () => {
                   <Input
                     id="name"
                     name="name"
-                    value={formData.name}
+                    value={doctorForm.name}
                     onChange={handleInputChange}
                     className="col-span-3"
                     required
@@ -240,20 +248,46 @@ const DoctorManagement: React.FC = () => {
                     id="email"
                     name="email"
                     type="email"
-                    value={formData.email}
+                    value={doctorForm.email}
                     onChange={handleInputChange}
                     className="col-span-3"
                     required
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="specialty" className="text-right">
-                    Specialty
+                  <Label htmlFor="phone" className="text-right">
+                    Phone
                   </Label>
                   <Input
-                    id="specialty"
-                    name="specialty"
-                    value={formData.specialty}
+                    id="phone"
+                    name="phone"
+                    value={doctorForm.phone}
+                    onChange={handleInputChange}
+                    className="col-span-3"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="specialization" className="text-right">
+                    Specialization
+                  </Label>
+                  <Input
+                    id="specialization"
+                    name="specialization"
+                    value={doctorForm.specialization}
+                    onChange={handleInputChange}
+                    className="col-span-3"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="experience" className="text-right">
+                    Experience
+                  </Label>
+                  <Input
+                    id="experience"
+                    name="experience"
+                    value={doctorForm.experience}
                     onChange={handleInputChange}
                     className="col-span-3"
                     required
@@ -266,7 +300,7 @@ const DoctorManagement: React.FC = () => {
                   <select
                     id="status"
                     name="status"
-                    value={formData.status}
+                    value={doctorForm.status}
                     onChange={handleInputChange}
                     className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     required
@@ -275,6 +309,18 @@ const DoctorManagement: React.FC = () => {
                     <option value="on-leave">On Leave</option>
                     <option value="inactive">Inactive</option>
                   </select>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="image" className="text-right">
+                    Image
+                  </Label>
+                  <Input
+                    id="image"
+                    name="image"
+                    type="file"
+                    onChange={handleInputChange}
+                    className="col-span-3"
+                  />
                 </div>
               </div>
               <DialogFooter>

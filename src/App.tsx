@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -42,8 +41,8 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
-            {/* Root Redirect */}
-            <Route path="/" element={<Navigate to="/login" />} />
+            {/* Root Path - will redirect based on auth state */}
+            <Route path="/" element={<AppLayout />} />
             
             {/* Protected Routes */}
             <Route element={<AppLayout />}>
@@ -51,21 +50,6 @@ const App = () => (
               <Route path="/admin-dashboard" element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/doctors" element={
-                <ProtectedRoute allowedRoles={['admin']}>
-                  <DoctorManagement />
-                </ProtectedRoute>
-              } />
-              <Route path="/patients" element={
-                <ProtectedRoute allowedRoles={['admin']}>
-                  <PatientManagement />
-                </ProtectedRoute>
-              } />
-              <Route path="/reports" element={
-                <ProtectedRoute allowedRoles={['admin']}>
-                  <ReportsManagement />
                 </ProtectedRoute>
               } />
               

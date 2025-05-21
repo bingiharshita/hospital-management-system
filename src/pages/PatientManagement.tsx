@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -104,20 +103,21 @@ const PatientManagement: React.FC = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   
   // Form state for adding/editing patients
-  const [formData, setFormData] = useState({
+  const [patientForm, setPatientForm] = useState({
     name: '',
     email: '',
     phone: '',
+    address: '',
     dateOfBirth: '',
-    gender: 'male' as const,
-    bloodType: '',
-    status: 'active' as const,
+    gender: 'male' as 'male' | 'female' | 'other',
+    bloodGroup: '',
+    status: 'active' as 'active' | 'inactive' | 'pending',
   });
   
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setPatientForm(prev => ({
       ...prev,
       [name]: value
     }));
@@ -148,7 +148,7 @@ const PatientManagement: React.FC = () => {
       setPatients(prev => 
         prev.map(patient => 
           patient.id === selectedPatient.id 
-            ? { ...patient, ...formData } 
+            ? { ...patient, ...patientForm } 
             : patient
         )
       );
@@ -160,7 +160,7 @@ const PatientManagement: React.FC = () => {
       // Add new patient
       const newPatient: Patient = {
         id: `${patients.length + 1}`,
-        ...formData,
+        ...patientForm,
         registrationDate: new Date().toISOString().split('T')[0]
       };
       setPatients(prev => [...prev, newPatient]);
@@ -177,13 +177,14 @@ const PatientManagement: React.FC = () => {
   
   // Reset form and selected patient
   const resetForm = () => {
-    setFormData({
+    setPatientForm({
       name: '',
       email: '',
       phone: '',
+      address: '',
       dateOfBirth: '',
       gender: 'male',
-      bloodType: '',
+      bloodGroup: '',
       status: 'active',
     });
     setSelectedPatient(null);
@@ -192,13 +193,14 @@ const PatientManagement: React.FC = () => {
   // Open edit dialog with patient data
   const openEditDialog = (patient: Patient) => {
     setSelectedPatient(patient);
-    setFormData({
+    setPatientForm({
       name: patient.name,
       email: patient.email,
       phone: patient.phone,
+      address: patient.address,
       dateOfBirth: patient.dateOfBirth,
       gender: patient.gender,
-      bloodType: patient.bloodType || '',
+      bloodGroup: patient.bloodType || '',
       status: patient.status,
     });
     setIsAddDialogOpen(true);
@@ -253,7 +255,7 @@ const PatientManagement: React.FC = () => {
                   <Input
                     id="name"
                     name="name"
-                    value={formData.name}
+                    value={patientForm.name}
                     onChange={handleInputChange}
                     className="col-span-3"
                     required
@@ -267,7 +269,7 @@ const PatientManagement: React.FC = () => {
                     id="email"
                     name="email"
                     type="email"
-                    value={formData.email}
+                    value={patientForm.email}
                     onChange={handleInputChange}
                     className="col-span-3"
                     required
@@ -280,7 +282,20 @@ const PatientManagement: React.FC = () => {
                   <Input
                     id="phone"
                     name="phone"
-                    value={formData.phone}
+                    value={patientForm.phone}
+                    onChange={handleInputChange}
+                    className="col-span-3"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="address" className="text-right">
+                    Address
+                  </Label>
+                  <Input
+                    id="address"
+                    name="address"
+                    value={patientForm.address}
                     onChange={handleInputChange}
                     className="col-span-3"
                     required
@@ -294,7 +309,7 @@ const PatientManagement: React.FC = () => {
                     id="dateOfBirth"
                     name="dateOfBirth"
                     type="date"
-                    value={formData.dateOfBirth}
+                    value={patientForm.dateOfBirth}
                     onChange={handleInputChange}
                     className="col-span-3"
                     required
@@ -307,7 +322,7 @@ const PatientManagement: React.FC = () => {
                   <select
                     id="gender"
                     name="gender"
-                    value={formData.gender}
+                    value={patientForm.gender}
                     onChange={handleInputChange}
                     className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     required
@@ -318,13 +333,13 @@ const PatientManagement: React.FC = () => {
                   </select>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="bloodType" className="text-right">
-                    Blood Type
+                  <Label htmlFor="bloodGroup" className="text-right">
+                    Blood Group
                   </Label>
                   <Input
-                    id="bloodType"
-                    name="bloodType"
-                    value={formData.bloodType}
+                    id="bloodGroup"
+                    name="bloodGroup"
+                    value={patientForm.bloodGroup}
                     onChange={handleInputChange}
                     className="col-span-3"
                     placeholder="e.g., A+, B-, O+"
@@ -337,7 +352,7 @@ const PatientManagement: React.FC = () => {
                   <select
                     id="status"
                     name="status"
-                    value={formData.status}
+                    value={patientForm.status}
                     onChange={handleInputChange}
                     className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     required

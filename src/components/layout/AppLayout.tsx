@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Outlet, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import AppHeader from '@/components/layout/AppHeader';
@@ -8,7 +8,9 @@ import AppSidebar from '@/components/layout/AppSidebar';
 
 const AppLayout: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   
+  // Redirect to login if not authenticated
   if (!user) {
     return <Navigate to="/login" replace />;
   }
@@ -28,9 +30,11 @@ const AppLayout: React.FC = () => {
   };
   
   // Redirect to appropriate dashboard if at the root of protected routes
-  if (window.location.pathname === '/') {
-    return <Navigate to={getDashboardPath()} replace />;
-  }
+  useEffect(() => {
+    if (window.location.pathname === '/') {
+      navigate(getDashboardPath(), { replace: true });
+    }
+  }, [user]);
 
   return (
     <SidebarProvider>
