@@ -3,6 +3,7 @@ import React from 'react';
 import { Bell, User, LogOut } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +14,16 @@ import {
 
 const AppHeader: React.FC = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    try {
+      logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -47,7 +58,7 @@ const AppHeader: React.FC = () => {
                 </p>
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer" onClick={logout}>
+              <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Log out
               </DropdownMenuItem>

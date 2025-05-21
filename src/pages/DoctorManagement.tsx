@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -140,7 +141,11 @@ const DoctorManagement: React.FC = () => {
       setDoctors(prev => 
         prev.map(doctor => 
           doctor.id === selectedDoctor.id 
-            ? { ...doctor, ...doctorForm } 
+            ? { 
+                ...doctor, 
+                ...doctorForm,
+                specialty: doctorForm.specialization // Fix: Map specialization to specialty
+              } 
             : doctor
         )
       );
@@ -153,6 +158,7 @@ const DoctorManagement: React.FC = () => {
       const newDoctor: Doctor = {
         id: `${doctors.length + 1}`,
         ...doctorForm,
+        specialty: doctorForm.specialization, // Fix: Map specialization to specialty
         joinDate: new Date().toISOString().split('T')[0]
       };
       setDoctors(prev => [...prev, newDoctor]);
@@ -188,10 +194,10 @@ const DoctorManagement: React.FC = () => {
       name: doctor.name,
       email: doctor.email,
       phoneNumber: doctor.phoneNumber,
-      specialization: doctor.specialty,
+      specialization: doctor.specialty, // Fix: Map specialty to specialization
       experienceYears: doctor.experienceYears,
       status: doctor.status,
-      image: doctor.avatar
+      image: doctor.image // Fix: Use image instead of avatar
     });
     setIsAddDialogOpen(true);
   };
