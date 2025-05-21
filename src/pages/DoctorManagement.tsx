@@ -28,10 +28,13 @@ interface Doctor {
   id: string;
   name: string;
   email: string;
+  specialization: string;
   specialty: string;
-  joinDate: string;
   status: 'active' | 'on-leave' | 'inactive';
-  avatar?: string;
+  image: string;
+  phoneNumber: string;
+  experienceYears: string;
+  joinDate: string;
 }
 
 // Mock data for doctors
@@ -39,42 +42,50 @@ const mockDoctors: Doctor[] = [
   { 
     id: '1', 
     name: 'Dr. John Smith', 
-    email: 'john.smith@hospital.com', 
-    specialty: 'Cardiology', 
-    joinDate: '2022-01-15', 
-    status: 'active' 
+    email: 'john.smith@example.com', 
+    specialization: 'Cardiology', 
+    specialty: 'Heart Surgery', 
+    status: 'active', 
+    image: '/placeholder.svg', 
+    phoneNumber: '(555) 123-4567', 
+    experienceYears: '15 years', 
+    joinDate: '2020-03-15' 
   },
   { 
     id: '2', 
     name: 'Dr. Sarah Johnson', 
-    email: 'sarah.johnson@hospital.com', 
-    specialty: 'Neurology', 
-    joinDate: '2021-05-22', 
-    status: 'active' 
+    email: 'sarah.johnson@example.com', 
+    specialization: 'Neurology', 
+    specialty: 'Brain Surgery', 
+    status: 'active', 
+    image: '/placeholder.svg', 
+    phoneNumber: '(555) 987-6543', 
+    experienceYears: '12 years', 
+    joinDate: '2021-05-10' 
   },
   { 
     id: '3', 
-    name: 'Dr. Michael Brown', 
-    email: 'michael.brown@hospital.com', 
-    specialty: 'Pediatrics', 
-    joinDate: '2023-03-10', 
-    status: 'active' 
+    name: 'Dr. Michael Lee', 
+    email: 'michael.lee@example.com', 
+    specialization: 'Pediatrics', 
+    specialty: 'Child Healthcare', 
+    status: 'on-leave', 
+    image: '/placeholder.svg', 
+    phoneNumber: '(555) 234-5678', 
+    experienceYears: '8 years', 
+    joinDate: '2022-01-20' 
   },
   { 
     id: '4', 
     name: 'Dr. Emily Chen', 
-    email: 'emily.chen@hospital.com', 
-    specialty: 'Dermatology', 
-    joinDate: '2022-08-05', 
-    status: 'on-leave' 
-  },
-  { 
-    id: '5', 
-    name: 'Dr. Robert Williams', 
-    email: 'robert.williams@hospital.com', 
-    specialty: 'Orthopedics', 
-    joinDate: '2021-11-30', 
-    status: 'inactive' 
+    email: 'emily.chen@example.com', 
+    specialization: 'Dermatology', 
+    specialty: 'Skin Treatment', 
+    status: 'inactive', 
+    image: '/placeholder.svg', 
+    phoneNumber: '(555) 876-5432', 
+    experienceYears: '10 years', 
+    joinDate: '2019-08-05' 
   },
 ];
 
@@ -88,9 +99,9 @@ const DoctorManagement: React.FC = () => {
   const [doctorForm, setDoctorForm] = useState({
     name: '',
     email: '',
-    phone: '',
+    phoneNumber: '',
     specialization: '',
-    experience: '',
+    experienceYears: '',
     status: 'active' as 'active' | 'on-leave' | 'inactive',
     image: ''
   });
@@ -161,9 +172,9 @@ const DoctorManagement: React.FC = () => {
     setDoctorForm({
       name: '',
       email: '',
-      phone: '',
+      phoneNumber: '',
       specialization: '',
-      experience: '',
+      experienceYears: '',
       status: 'active',
       image: ''
     });
@@ -176,9 +187,9 @@ const DoctorManagement: React.FC = () => {
     setDoctorForm({
       name: doctor.name,
       email: doctor.email,
-      phone: doctor.phone,
+      phoneNumber: doctor.phoneNumber,
       specialization: doctor.specialty,
-      experience: doctor.experience,
+      experienceYears: doctor.experienceYears,
       status: doctor.status,
       image: doctor.avatar
     });
@@ -255,13 +266,13 @@ const DoctorManagement: React.FC = () => {
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="phone" className="text-right">
-                    Phone
+                  <Label htmlFor="phoneNumber" className="text-right">
+                    Phone Number
                   </Label>
                   <Input
-                    id="phone"
-                    name="phone"
-                    value={doctorForm.phone}
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    value={doctorForm.phoneNumber}
                     onChange={handleInputChange}
                     className="col-span-3"
                     required
@@ -281,13 +292,13 @@ const DoctorManagement: React.FC = () => {
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="experience" className="text-right">
-                    Experience
+                  <Label htmlFor="experienceYears" className="text-right">
+                    Experience Years
                   </Label>
                   <Input
-                    id="experience"
-                    name="experience"
-                    value={doctorForm.experience}
+                    id="experienceYears"
+                    name="experienceYears"
+                    value={doctorForm.experienceYears}
                     onChange={handleInputChange}
                     className="col-span-3"
                     required
@@ -364,79 +375,85 @@ const DoctorManagement: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Specialty</TableHead>
-                <TableHead>Join Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredDoctors.length === 0 ? (
+          <div className="rounded-md border">
+            <table className="min-w-full divide-y divide-gray-200">
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8">
-                    <div className="flex flex-col items-center justify-center text-muted-foreground">
-                      <User className="h-8 w-8 mb-2" />
-                      {searchTerm ? 'No doctors match your search' : 'No doctors added yet'}
-                    </div>
-                  </TableCell>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Specialty</TableHead>
+                  <TableHead>Phone Number</TableHead>
+                  <TableHead>Experience Years</TableHead>
+                  <TableHead>Join Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ) : (
-                filteredDoctors.map((doctor) => (
-                  <TableRow key={doctor.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar>
-                          <AvatarImage src={doctor.avatar} />
-                          <AvatarFallback className="bg-hospital-100 text-hospital-600">
-                            {doctor.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium">{doctor.name}</p>
-                          <p className="text-sm text-muted-foreground">{doctor.email}</p>
-                        </div>
+              </TableHeader>
+              <TableBody>
+                {filteredDoctors.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8">
+                      <div className="flex flex-col items-center justify-center text-muted-foreground">
+                        <User className="h-8 w-8 mb-2" />
+                        {searchTerm ? 'No doctors match your search' : 'No doctors added yet'}
                       </div>
                     </TableCell>
-                    <TableCell>{doctor.specialty}</TableCell>
-                    <TableCell>
-                      {new Date(doctor.joinDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                      })}
-                    </TableCell>
-                    <TableCell>{getStatusBadge(doctor.status)}</TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="outline" size="sm">
-                            Actions
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openEditDialog(doctor)}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => handleDelete(doctor.id)}
-                            className="text-red-600"
-                          >
-                            <Trash className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : (
+                  filteredDoctors.map((doctor) => (
+                    <TableRow key={doctor.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar>
+                            <AvatarImage src={doctor.image} />
+                            <AvatarFallback className="bg-hospital-100 text-hospital-600">
+                              {doctor.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium">{doctor.name}</p>
+                            <p className="text-sm text-muted-foreground">{doctor.email}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{doctor.specialty}</TableCell>
+                      <TableCell>{doctor.phoneNumber}</TableCell>
+                      <TableCell>{doctor.experienceYears}</TableCell>
+                      <TableCell>
+                        {new Date(doctor.joinDate).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </TableCell>
+                      <TableCell>{getStatusBadge(doctor.status)}</TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              Actions
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => openEditDialog(doctor)}>
+                              <Edit className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => handleDelete(doctor.id)}
+                              className="text-red-600"
+                            >
+                              <Trash className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </table>
+          </div>
         </CardContent>
         <CardFooter className="border-t px-6 py-4">
           <div className="flex items-center justify-between w-full">

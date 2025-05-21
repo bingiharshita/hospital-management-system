@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { EyeIcon, Download, Search, PlusCircle, Filter, ArrowUpDown } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -135,7 +136,7 @@ const BillingManagement: React.FC = () => {
                     <SelectValue placeholder="Filter status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All</SelectItem>
+                    <SelectItem value="all">All</SelectItem>
                     <SelectItem value="paid">Paid</SelectItem>
                     <SelectItem value="pending">Pending</SelectItem>
                     <SelectItem value="overdue">Overdue</SelectItem>
@@ -223,7 +224,7 @@ const BillingManagement: React.FC = () => {
                       <Badge
                         variant={
                           billing.status === 'paid'
-                            ? 'success'
+                            ? 'secondary'
                             : billing.status === 'pending'
                             ? 'secondary'
                             : 'destructive'
@@ -234,7 +235,7 @@ const BillingManagement: React.FC = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="icon">
-                        <EyeIcon className="h-4 w-4 mr-2" />
+                        <EyeIcon className="h-4 w-4" />
                       </Button>
                     </TableCell>
                   </TableRow>
